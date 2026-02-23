@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة الإدارة - الهاكاثون</title>
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#0f172a; --card:#111c33; --muted:#94a3b8; --text:#e5e7eb;
+      --line:rgba(148,163,184,.18); --ok:#22c55e; --danger:#ef4444; --brand:#38bdf8;
+      --shadow:0 14px 40px rgba(0,0,0,.35); --r:18px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)}
+    .wrap{max-width:1100px; margin:auto; padding:18px}
+    .card{background:rgba(15,23,42,.7); border:1px solid var(--line); border-radius:var(--r); padding:14px; box-shadow:var(--shadow)}
+    h1{margin:0; font-size:16px}
+    .sub{margin-top:6px; color:var(--muted); font-size:12px; line-height:1.5}
+    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
+    input, textarea{
+      width:100%; padding:10px 12px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(17,28,51,.55); color:var(--text); outline:none; font-size:14px
+    }
+    textarea{min-height:70px; resize:vertical}
+    .row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
+    @media (max-width:900px){.row{grid-template-columns:1fr}}
+    .btnRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .btn{border:0; border-radius:14px; padding:11px 14px; font-weight:900; cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92)); color:#07121f}
+    .btn.ghost{background:rgba(17,28,51,.55); border:1px solid var(--line); color:var(--text)}
+    .btn.danger{background:rgba(239,68,68,.92); color:#190508}
+    .msg{margin-top:10px; font-size:13px; color:var(--muted)}
+    .msg.ok{color:var(--ok); font-weight:900}
+    .msg.err{color:var(--danger); font-weight:900}
+    .tableWrap{overflow:auto; border-radius:16px; border:1px solid var(--line); margin-top:12px}
+    table{width:100%; border-collapse:collapse; min-width:760px; background:rgba(17,28,51,.45)}
+    th,td{padding:10px 12px; border-bottom:1px solid var(--line); font-size:13px; text-align:right}
+    th{color:var(--muted); background:rgba(17,28,51,.65)}
+    code{background:rgba(17,28,51,.55); border:1px solid var(--line); padding:2px 6px; border-radius:10px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>لوحة الإدارة (Admin)</h1>
+    <div class="sub">
+      تضيف الفرق وتعدلها. هذي الصفحة للإدارة فقط (كمبيوتر البروجكتر/المسؤول).<br>
+      رابط الحكّام عادة يكون: <code>/index.html</code>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <div>
+        <label>PIN الإدارة</label>
+        <input id="pin" placeholder="اكتب PIN" />
+      </div>
+      <div>
+        <label>رابط الحكّام</label>
+        <input id="judgesLink" readonly />
+      </div>
+      <div>
+        <label>QR مثال لفريق</label>
+        <input id="qrExample" readonly />
+      </div>
+    </div>
+    <div class="btnRow">
+      <button class="btn ghost" id="btnLoad">تحميل البيانات</button>
+      <button class="btn primary" id="btnSaveAll">حفظ التغييرات</button>
+      <button class="btn danger" id="btnResetEval">تفريغ التقييمات (اختياري)</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h1>إضافة / تعديل فريق</h1>
+    <div class="row" style="margin-top:8px">
+      <div>
+        <label>Team ID</label>
+        <input id="teamId" placeholder="مثال: T01 أو 1" />
+      </div>
+      <div>
+        <label>اسم المشروع</label>
+        <input id="project" placeholder="مثال: HealthAI" />
+      </div>
+      <div>
+        <label>الجامعة/الجهة</label>
+        <input id="org" placeholder="مثال: جامعة ..." />
+      </div>
+    </div>
+    <label>ملاحظات/وصف (اختياري)</label>
+    <textarea id="note" placeholder="اختياري"></textarea>
+
+    <div class="btnRow">
+      <button class="btn primary" id="btnAddOrUpdate">إضافة/تحديث</button>
+      <button class="btn ghost" id="btnClearForm">مسح الحقول</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h1>قائمة الفرق</h1>
+    <div class="sub">اضغط على أي صف لتعبئة النموذج وتعديله.</div>
+
+    <div class="tableWrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Team ID</th>
+            <th>المشروع</th>
+            <th>الجهة</th>
+            <th>ملاحظات</th>
+            <th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   CONFIG (JSONBin)
+   ========================= */
+const JSONBIN_BIN_ID  = "699c7c98d0ea881f40d25331";
+const JSONBIN_API_KEY = "$2a$10$8rkoiVkou/iglqXxQNfmduvpxAqN6XY6fILRTcIcc0Hw1MyF2g8sa";
+
+/* قفل بسيط للـ Admin */
+const ADMIN_PIN = "1234"; // غيّره
+
+/* =========================
+   JSONBin helpers
+   ========================= */
+const $ = (id)=>document.getElementById(id);
+function safe(x){ return String(x ?? "").trim(); }
+
+async function getRecord(){
+  const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+    headers: { "X-Master-Key": JSONBIN_API_KEY }
+  });
+  if(!res.ok) throw new Error("Fetch failed");
+  const data = await res.json();
+  return data?.record || { teams:[], evaluations:[] };
+}
+
+async function putRecord(record){
+  const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+    method:"PUT",
+    headers: { "Content-Type":"application/json", "X-Master-Key": JSONBIN_API_KEY },
+    body: JSON.stringify(record)
+  });
+  if(!res.ok) throw new Error("Update failed");
+}
+
+function msg(text, kind=""){
+  const el = $("msg");
+  el.className = "msg" + (kind ? " " + kind : "");
+  el.textContent = text;
+}
+
+let state = { teams:[], evaluations:[] };
+
+function requirePin(){
+  if(safe($("pin").value) !== ADMIN_PIN){
+    msg("PIN غير صحيح.", "err");
+    return false;
+  }
+  return true;
+}
+
+function render(){
+  const tbody = $("tbody");
+  tbody.innerHTML = "";
+  state.teams.sort((a,b)=> safe(a.id).localeCompare(safe(b.id), "en", {numeric:true}));
+  state.teams.forEach(t => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><b>${t.id}</b></td>
+      <td>${t.project || "—"}</td>
+      <td>${t.org || "—"}</td>
+      <td>${t.note || "—"}</td>
+      <td>
+        <button class="btn ghost" data-edit="${t.id}" style="padding:8px 10px">تعديل</button>
+        <button class="btn danger" data-del="${t.id}" style="padding:8px 10px">حذف</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // روابط
+  const base = location.href.replace(/admin\.html.*/,"");
+  $("judgesLink").value = base + "index.html";
+  $("qrExample").value = base + "index.html?team=T01";
+}
+
+function fillForm(team){
+  $("teamId").value = team.id || "";
+  $("project").value = team.project || "";
+  $("org").value = team.org || "";
+  $("note").value = team.note || "";
+}
+
+function upsertTeam(){
+  if(!requirePin()) return;
+  const id = safe($("teamId").value);
+  if(!id){ msg("Team ID مطلوب.", "err"); return; }
+
+  const team = {
+    id,
+    project: safe($("project").value),
+    org: safe($("org").value),
+    note: safe($("note").value),
+  };
+
+  state.teams = state.teams.filter(t => safe(t.id).toLowerCase() !== id.toLowerCase());
+  state.teams.push(team);
+  msg("تمت الإضافة/التحديث محليًا. اضغط (حفظ التغييرات) لتسجيلها.", "ok");
+  render();
+}
+
+function deleteTeam(id){
+  if(!requirePin()) return;
+  state.teams = state.teams.filter(t => safe(t.id).toLowerCase() !== safe(id).toLowerCase());
+  // (اختياري) حذف التقييمات التابعة للفريق
+  state.evaluations = state.evaluations.filter(e => safe(e.teamId).toLowerCase() !== safe(id).toLowerCase());
+  msg("تم حذف الفريق محليًا. اضغط (حفظ التغييرات) لتسجيلها.", "ok");
+  render();
+}
+
+async function load(){
+  if(!requirePin()) return;
+  msg("جاري التحميل...");
+  try{
+    state = await getRecord();
+    state.teams = Array.isArray(state.teams) ? state.teams : [];
+    state.evaluations = Array.isArray(state.evaluations) ? state.evaluations : [];
+    render();
+    msg("تم التحميل ✅", "ok");
+  }catch(e){
+    console.error(e);
+    msg("فشل التحميل. تأكد من BIN_ID و KEY.", "err");
+  }
+}
+
+async function saveAll(){
+  if(!requirePin()) return;
+  msg("جاري الحفظ...");
+  try{
+    await putRecord({ teams: state.teams, evaluations: state.evaluations });
+    msg("تم حفظ التغييرات ✅", "ok");
+  }catch(e){
+    console.error(e);
+    msg("فشل الحفظ. تأكد من BIN_ID و KEY.", "err");
+  }
+}
+
+async function resetEvaluations(){
+  if(!requirePin()) return;
+  if(!confirm("متأكد؟ سيتم تفريغ كل التقييمات!")) return;
+  msg("جاري تفريغ التقييمات...");
+  try{
+    state.evaluations = [];
+    await putRecord({ teams: state.teams, evaluations: [] });
+    msg("تم تفريغ التقييمات ✅", "ok");
+  }catch(e){
+    console.error(e);
+    msg("فشل العملية.", "err");
+  }
+}
+
+// events
+$("btnLoad").addEventListener("click", load);
+$("btnSaveAll").addEventListener("click", saveAll);
+$("btnResetEval").addEventListener("click", resetEvaluations);
+$("btnAddOrUpdate").addEventListener("click", upsertTeam);
+$("btnClearForm").addEventListener("click", ()=>fillForm({}));
+
+$("tbody").addEventListener("click", (e)=>{
+  const editId = e.target?.getAttribute?.("data-edit");
+  const delId  = e.target?.getAttribute?.("data-del");
+  if(editId){
+    const t = state.teams.find(x => safe(x.id).toLowerCase() === safe(editId).toLowerCase());
+    if(t) fillForm(t);
+  }
+  if(delId) deleteTeam(delId);
+});
+
+// init
+render();
+msg("اكتب PIN ثم اضغط (تحميل البيانات) ✅");
+</script>
+</body>
+</html>
