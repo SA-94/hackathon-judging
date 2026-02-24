@@ -11,26 +11,52 @@
       --brand:#38bdf8;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1000px 500px at 15% 0%, rgba(56,189,248,.12), transparent 60%),var(--bg);color:var(--text)}
-    .wrap{max-width:1100px;margin:auto;padding:18px}
-    .card{background:rgba(15,23,42,.75);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);margin-top:14px}
-    h1{margin:0;font-size:16px}
+    *::-webkit-scrollbar{width:10px;height:10px}
+    *::-webkit-scrollbar-thumb{background:rgba(148,163,184,.35);border-radius:999px}
+    *::-webkit-scrollbar-track{background:rgba(15,23,42,.35)}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:
+      radial-gradient(1300px 650px at 8% -10%, rgba(56,189,248,.2), transparent 62%),
+      radial-gradient(900px 520px at 95% 15%, rgba(34,197,94,.10), transparent 65%),
+      var(--bg);color:var(--text);padding-bottom:64px;overflow-x:hidden;position:relative}
+    body::before, body::after{
+      content:"";
+      position:fixed;
+      width:420px;
+      height:420px;
+      border-radius:50%;
+      filter:blur(70px);
+      opacity:.2;
+      z-index:-1;
+      pointer-events:none;
+      animation:floatGlow 12s ease-in-out infinite alternate;
+    }
+    body::before{background:#38bdf8;top:-120px;right:-90px}
+    body::after{background:#22c55e;bottom:-170px;left:-110px;animation-duration:16s}
+    .wrap{max-width:1100px;margin:auto;padding:18px;animation:pageIn .45s ease}
+    .card{background:rgba(15,23,42,.75);backdrop-filter:blur(7px);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);margin-top:14px}
+    .card{transition:transform .18s ease, border-color .18s ease}
+    .card:hover{transform:translateY(-1px);border-color:rgba(56,189,248,.28)}
+    h1{margin:0;font-size:16px;background:linear-gradient(135deg,#e5e7eb 30%,#7dd3fc 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
     .sub{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.5}
     label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
-    input{width:100%;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(17,28,51,.55);color:var(--text);outline:none;font-size:14px}
+    input{width:100%;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(17,28,51,.55);color:var(--text);outline:none;font-size:14px;transition:border-color .16s ease, box-shadow .16s ease}
+    input:focus{border-color:rgba(56,189,248,.6);box-shadow:0 0 0 3px rgba(56,189,248,.15)}
     .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
     @media (max-width:900px){.row{grid-template-columns:1fr}}
     .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{border:0;border-radius:14px;padding:10px 14px;font-weight:900;cursor:pointer}
+    .btn{border:0;border-radius:14px;padding:10px 14px;font-weight:900;cursor:pointer;transition:transform .12s ease, box-shadow .18s ease, filter .18s ease}
     .btn.primary{background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92));color:#07121f}
     .btn.ghost{background:rgba(17,28,51,.55);border:1px solid var(--line);color:var(--text)}
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.02)}
+    .btn:active{transform:translateY(0)}
     .msg{margin-top:10px;font-size:13px;color:var(--muted)}
     .msg.ok{color:var(--ok);font-weight:900}
     .msg.err{color:var(--danger);font-weight:900}
     .teams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
     @media (max-width:980px){.teams{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:560px){.teams{grid-template-columns:1fr}}
-    .teamCard{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(17,28,51,.45)}
+    .teamCard{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(17,28,51,.45);transition:transform .12s ease, box-shadow .2s ease, border-color .2s ease}
+    .teamCard:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.35);box-shadow:0 10px 26px rgba(3,10,22,.45)}
     .teamTitle{font-weight:1000}
     .teamMeta{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.5}
     .miniBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -69,10 +95,12 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:center;
-      gap:18px;
-      padding:28px;
+      justify-content:flex-start;
+      gap:10px;
+      padding:18px 28px 20px;
       text-align:center;
+      position:relative;
+      z-index:2;
     }
     .bigName{
       font-size:clamp(28px, 5vw, 64px);
@@ -85,11 +113,50 @@
       box-shadow:0 20px 70px rgba(0,0,0,.35);
       min-width:min(900px, 92vw);
     }
+    .centerTeam{
+      min-width:min(900px, 92vw);
+      font-size:clamp(26px, 4.6vw, 58px);
+      font-weight:1000;
+      letter-spacing:.2px;
+      line-height:1.25;
+      text-align:center;
+      text-shadow:0 8px 25px rgba(0,0,0,.45);
+      min-height:1.4em;
+      margin-top:clamp(95px, 16vh, 180px);
+      margin-bottom:0;
+    }
+    .centerTeam.lockedName::after{
+      content:"";
+      display:block;
+      width:min(260px, 52%);
+      height:4px;
+      margin:12px auto 0;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(56,189,248,.05), rgba(56,189,248,.95), rgba(34,197,94,.92), rgba(56,189,248,.05));
+      box-shadow:0 0 20px rgba(56,189,248,.35);
+    }
+    .centerTeam.nameJump{
+      animation:firstPlaceJump 1.45s cubic-bezier(.2,.9,.2,1.1) infinite;
+    }
+    .trophyWrap{
+      font-size:190px;
+      line-height:1;
+      opacity:0;
+      transform:translateY(0) scale(1);
+      filter:drop-shadow(0 12px 24px rgba(0,0,0,.45));
+      transition:opacity .25s ease;
+      user-select:none;
+      margin-top:4px;
+    }
+    .trophyWrap.showCup{
+      opacity:1;
+      animation:none;
+    }
     .winnersGrid{
       width:min(900px, 92vw);
-      display:grid;
+      display:none;
       gap:12px;
-      margin-top:4px;
+      margin-top:2px;
     }
     .winnerCard{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
@@ -102,6 +169,11 @@
       transition:opacity .35s ease, transform .35s ease;
     }
     .winnerCard.showIt{opacity:1; transform:translateY(0)}
+    .winnerCard.hideIt{opacity:0; transform:translateY(-10px) scale(.98)}
+    .winnerCard.firstRank{
+      border-color:rgba(250,204,21,.45);
+      background:linear-gradient(135deg, rgba(250,204,21,.16), rgba(255,255,255,.06));
+    }
     .left{
       display:flex; align-items:center; gap:10px; flex-wrap:wrap;
       font-weight:1000;
@@ -110,8 +182,8 @@
     .medal{font-size:clamp(18px, 2.6vw, 26px)}
     .meta{
       color:rgba(255,255,255,.75);
-      font-size:clamp(12px, 1.7vw, 14px);
-      font-weight:700;
+      font-size:clamp(26px, 3.2vw, 40px);
+      font-weight:1000;
       text-align:left;
       direction:ltr;
     }
@@ -120,20 +192,22 @@
     .controlBar{
       width:min(900px, 92vw);
       display:flex;
-      justify-content:space-between;
+      flex-direction:column;
+      justify-content:center;
       align-items:center;
-      gap:12px;
+      gap:10px;
       padding:10px 12px;
       border-radius:999px;
       background:rgba(255,255,255,.06);
       border:1px solid rgba(255,255,255,.14);
-      margin-top:10px;
+      margin-top:auto;
     }
     .controlHint{
       color:rgba(255,255,255,.70);
       font-size:12px;
       user-select:none;
     }
+    .controlActions{display:flex;flex-direction:column;gap:8px;align-items:center}
     .nextBtn{
       border:0;
       border-radius:999px;
@@ -157,6 +231,96 @@
       padding:10px 14px;
       cursor:pointer;
       font-weight:900;
+    }
+
+    .confettiLayer{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:5;
+    }
+    .confetti{
+      position:absolute;
+      top:-12vh;
+      opacity:.95;
+      border-radius:2px;
+      transform:translate3d(0,0,0) rotate(0deg);
+      animation:confettiFall linear forwards;
+    }
+    .fireworksLayer{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:0;
+    }
+    .firework{
+      position:absolute;
+      width:2px;
+      height:2px;
+      pointer-events:none;
+    }
+    .spark{
+      position:absolute;
+      width:6px;
+      height:6px;
+      border-radius:999px;
+      background:var(--c, #fff);
+      left:0;
+      top:0;
+      transform:rotate(var(--ang, 0deg)) translateY(0) scale(.8);
+      opacity:0;
+      box-shadow:0 0 10px var(--c, #fff);
+      animation:fireworkSpark 1200ms ease-out forwards;
+    }
+
+    .rightsBar{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      z-index:40;
+      padding:10px 16px;
+      text-align:center;
+      font-size:12px;
+      color:#d1d5db;
+      background:rgba(7,13,27,.88);
+      border-top:1px solid rgba(148,163,184,.22);
+      backdrop-filter:blur(10px);
+    }
+
+    @keyframes floatGlow{
+      0%{transform:translateY(0) translateX(0) scale(1)}
+      100%{transform:translateY(18px) translateX(10px) scale(1.08)}
+    }
+    @keyframes pageIn{
+      from{opacity:0;transform:translateY(8px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+    @keyframes firstPlaceJump{
+      0%{transform:translateY(0) scale(1)}
+      28%{transform:translateY(-12px) scale(1.025)}
+      55%{transform:translateY(0) scale(1)}
+      78%{transform:translateY(-6px) scale(1.01)}
+      100%{transform:translateY(0) scale(1)}
+    }
+    @keyframes cupPop{
+      0%{transform:translateY(24px) scale(.7)}
+      55%{transform:translateY(-10px) scale(1.08)}
+      100%{transform:translateY(0) scale(1)}
+    }
+    @keyframes confettiFall{
+      from{transform:translate3d(0,0,0) rotate(0deg)}
+      to{transform:translate3d(var(--drift, 0px), 132vh, 0) rotate(980deg)}
+    }
+    @keyframes fireworkSpark{
+      0%{opacity:0;transform:rotate(var(--ang, 0deg)) translateY(0) scale(.8)}
+      12%{opacity:1}
+      100%{opacity:0;transform:rotate(var(--ang, 0deg)) translateY(var(--dist, -90px)) scale(1.05)}
+    }
+    @media (prefers-reduced-motion:reduce){
+      *{animation:none !important;transition:none !important}
     }
   </style>
 </head>
@@ -224,19 +388,25 @@
 
 <!-- شاشة العرض الفل سكرين -->
 <div class="show" id="showScreen" aria-hidden="true">
+  <div class="fireworksLayer" id="fireworksLayer" aria-hidden="true"></div>
+  <div class="confettiLayer" id="confettiLayer" aria-hidden="true"></div>
   <div class="showInner">
     <div class="bigName" id="bigName">جاهز…</div>
+    <div class="centerTeam" id="centerTeam">—</div>
+    <div class="trophyWrap" id="trophyWrap" aria-hidden="true">🏆</div>
     <div class="winnersGrid" id="winnersGrid"></div>
 
     <div class="controlBar">
-      <div class="controlHint">Enter/Space = التالي • Esc = خروج • R = إعادة</div>
-      <div style="display:flex;gap:10px;align-items:center">
+      <div class="controlActions">
         <button class="ghostBtn" id="btnExitShow">خروج</button>
         <button class="nextBtn" id="btnNext" disabled>التالي</button>
       </div>
+      <div class="controlHint">Enter/Space = التالي • Esc = خروج • R = إعادة</div>
     </div>
   </div>
 </div>
+
+<footer class="rightsBar">© 2026 جميع الحقوق محفوظة — فهد القحطاني</footer>
 
 <script>
 /* =========================
@@ -436,16 +606,24 @@ function medal(rank){
 const cfgOverlay = $("cfgOverlay");
 const showScreen = $("showScreen");
 const bigName = $("bigName");
+const centerTeam = $("centerTeam");
 const winnersGrid = $("winnersGrid");
 const btnNext = $("btnNext");
+const trophyWrap = $("trophyWrap");
+const confettiLayer = $("confettiLayer");
+const fireworksLayer = $("fireworksLayer");
 
 let shuffleTimer = null;
 let running = false;
+let fireworksTimer = null;
 
 // reveal state
 let revealList = []; // items in order: N..1
 let revealIndex = 0;
 let revealTotal = 0;
+let namePool = [];
+let transitioning = false;
+let finalSequenceRunning = false;
 
 function openCfg(){
   setCfgMsg("");
@@ -466,6 +644,7 @@ function closeShow(){
   document.exitFullscreen?.().catch(()=>{});
   running = false;
   btnNext.disabled = true;
+  stopFireworks();
 }
 
 function stopShuffle(){
@@ -478,8 +657,159 @@ function resetRevealUI(){
   revealList = [];
   revealIndex = 0;
   revealTotal = 0;
+  namePool = [];
+  transitioning = false;
+  finalSequenceRunning = false;
+  confettiLayer.innerHTML = "";
+  fireworksLayer.innerHTML = "";
+  trophyWrap.classList.remove("showCup");
+  centerTeam.classList.remove("nameJump");
+  centerTeam.classList.remove("lockedName");
+  centerTeam.textContent = "—";
   btnNext.textContent = "التالي";
   btnNext.disabled = true;
+}
+
+function wait(ms){
+  return new Promise(r=>setTimeout(r, ms));
+}
+
+function winnerLabel(t){
+  return `${t.teamName || "—"} — ${t.teamId}`;
+}
+
+async function runNameShuffle(durationMs, fallbackLabel=""){
+  centerTeam.classList.remove("lockedName");
+  const pool = namePool.length ? namePool : [fallbackLabel || "—"];
+  const stepMs = 85;
+  const steps = Math.max(1, Math.floor(durationMs / stepMs));
+  for(let i=0; i<steps; i++){
+    centerTeam.textContent = pool[Math.floor(Math.random() * pool.length)];
+    await wait(stepMs);
+  }
+}
+
+function startFireworks(){
+  stopFireworks();
+  launchFireworkBurst();
+  fireworksTimer = setInterval(launchFireworkBurst, 220);
+}
+
+function stopFireworks(){
+  if(fireworksTimer) clearInterval(fireworksTimer);
+  fireworksTimer = null;
+  fireworksLayer.innerHTML = "";
+}
+
+function launchFireworkBurst(){
+  const colors = ["#f43f5e", "#38bdf8", "#22c55e", "#f59e0b", "#a78bfa", "#eab308", "#14b8a6", "#f97316"];
+  const burst = document.createElement("div");
+  burst.className = "firework";
+  burst.style.left = `${4 + Math.random() * 92}vw`;
+  burst.style.top = `${8 + Math.random() * 78}vh`;
+
+  const sparks = 16;
+  for(let i=0; i<sparks; i++){
+    const spark = document.createElement("span");
+    spark.className = "spark";
+    spark.style.setProperty("--ang", `${Math.round((360 / sparks) * i)}deg`);
+    spark.style.setProperty("--dist", `${-70 - Math.random()*65}px`);
+    spark.style.setProperty("--c", colors[Math.floor(Math.random()*colors.length)]);
+    spark.style.animationDuration = `${900 + Math.random()*650}ms`;
+    burst.appendChild(spark);
+  }
+
+  fireworksLayer.appendChild(burst);
+  setTimeout(()=> burst.remove(), 1700);
+}
+
+async function renderSingleWinner(t, rank, isFirst=false){
+  const old = winnersGrid.querySelector(".winnerCard");
+  if(old){
+    old.classList.remove("showIt");
+    old.classList.add("hideIt");
+    await wait(240);
+  }
+
+  winnersGrid.innerHTML = "";
+
+  const card = document.createElement("div");
+  card.className = `winnerCard${isFirst ? " firstRank" : ""}`;
+  const score = Number(t.score || 0).toFixed(2);
+  const m = medal(rank);
+  const label = winnerLabel(t);
+
+  card.innerHTML = `
+    <div class="meta">${score} / 65</div>
+    <div class="left">
+      <span class="medal">${m}</span>
+      <span>المركز ${rank}</span>
+      <span>—</span>
+      <span>${label}</span>
+    </div>
+  `;
+
+  winnersGrid.appendChild(card);
+  requestAnimationFrame(()=> card.classList.add("showIt"));
+}
+
+function launchConfetti(){
+  confettiLayer.innerHTML = "";
+  const colors = ["#f43f5e", "#38bdf8", "#22c55e", "#f59e0b", "#a78bfa", "#eab308", "#14b8a6"];
+  const count = 260;
+
+  for(let i=0; i<count; i++){
+    const piece = document.createElement("span");
+    piece.className = "confetti";
+
+    const left = Math.random() * 100;
+    const size = 7 + Math.random() * 10;
+    const delay = Math.random() * 850;
+    const duration = 2600 + Math.random() * 2600;
+    const drift = -120 + Math.random() * 240;
+    const color = colors[Math.floor(Math.random()*colors.length)];
+
+    piece.style.left = `${left}vw`;
+    piece.style.width = `${size}px`;
+    piece.style.height = `${Math.max(4, size*0.55)}px`;
+    piece.style.background = color;
+    piece.style.setProperty("--drift", `${drift}px`);
+    piece.style.animationDuration = `${duration}ms`;
+    piece.style.animationDelay = `${delay}ms`;
+
+    confettiLayer.appendChild(piece);
+  }
+
+  setTimeout(()=>{
+    confettiLayer.innerHTML = "";
+  }, 7600);
+}
+
+async function revealFirstPlace(t){
+  finalSequenceRunning = true;
+  btnNext.disabled = true;
+  startFireworks();
+  trophyWrap.classList.remove("showCup");
+
+  bigName.textContent = "🥇 المركز 1";
+  centerTeam.classList.remove("lockedName");
+  centerTeam.classList.remove("nameJump");
+  centerTeam.textContent = "";
+
+  await runNameShuffle(3200, winnerLabel(t));
+
+  const label = winnerLabel(t);
+  bigName.textContent = "🥇 المركز 1";
+  centerTeam.textContent = label;
+  void centerTeam.offsetWidth;
+  centerTeam.classList.add("nameJump");
+  trophyWrap.classList.add("showCup");
+
+  launchConfetti();
+
+  btnNext.textContent = "إنهاء";
+  btnNext.disabled = false;
+  finalSequenceRunning = false;
 }
 
 async function startShowFlow(){
@@ -493,11 +823,28 @@ async function startShowFlow(){
     render();
   }catch(e){}
 
-  const winnersCount = Math.max(1, Number($("winnersCount").value || 3));
   const ranking = computeRanking();
 
   if(!ranking.length){
     setCfgMsg("لا توجد تقييمات حتى الآن. خلّ الحكّام يحفظون أولاً.", "err");
+    running = false;
+    return;
+  }
+
+  const winnersInput = $("winnersCount");
+  winnersInput.max = String(ranking.length);
+
+  const requestedCount = Number(winnersInput.value || 0);
+  if(!Number.isFinite(requestedCount) || requestedCount < 1){
+    setCfgMsg("أدخل عدد فائزين صحيح (1 أو أكثر).", "err");
+    running = false;
+    return;
+  }
+
+  const winnersCount = Math.floor(requestedCount);
+  if(winnersCount > ranking.length){
+    setCfgMsg(`عدد الفائزين أكبر من الفرق المقيمة (${ranking.length}).`, "err");
+    winnersInput.value = String(ranking.length);
     running = false;
     return;
   }
@@ -514,25 +861,30 @@ async function startShowFlow(){
     const nm = t.teamName || `Team ${t.teamId}`;
     return `${nm} — ${t.teamId}`;
   });
+  namePool = pool;
 
   bigName.textContent = "يتم تجهيز النتائج...";
+  centerTeam.classList.remove("lockedName");
+  centerTeam.textContent = "";
   btnNext.disabled = true;
 
   // spin 4.5s
   const spinMs = 4500;
   shuffleTimer = setInterval(()=>{
-    bigName.textContent = pool[Math.floor(Math.random()*pool.length)];
+    centerTeam.textContent = pool[Math.floor(Math.random()*pool.length)];
   }, 80);
 
   await new Promise(r=>setTimeout(r, spinMs));
   stopShuffle();
 
-  bigName.textContent = "جاهزين 🎉 اضغط (التالي)";
+  bigName.textContent = "جاهزين 🎉";
+  centerTeam.textContent = "اضغط (التالي)";
+  stopFireworks();
   btnNext.disabled = false;
 }
 
-function revealNext(){
-  if(btnNext.disabled) return;
+async function revealNext(){
+  if(btnNext.disabled || transitioning || finalSequenceRunning) return;
 
   // انتهى
   if(revealIndex >= revealList.length){
@@ -545,26 +897,22 @@ function revealNext(){
 
   const t = revealList[revealIndex];
   const rank = revealTotal - revealIndex; // يبدأ من N إلى 1
-  const m = medal(rank);
 
-  const label = `${t.teamName || "—"} — ${t.teamId}`;
-  bigName.textContent = `${m} المركز ${rank}: ${label}`;
+  if(rank === 1){
+    revealIndex++;
+    revealFirstPlace(t);
+    return;
+  }
 
-  const card = document.createElement("div");
-  card.className = "winnerCard";
-  const score = t.score.toFixed(2);
-  card.innerHTML = `
-    <div class="left">
-      <span class="medal">${m}</span>
-      <span>المركز ${rank}</span>
-      <span>—</span>
-      <span>${label}</span>
-    </div>
-    <div class="meta">${score} / 65 • حكّام: ${t.judges}</div>
-  `;
-  winnersGrid.appendChild(card);
-  requestAnimationFrame(()=> card.classList.add("showIt"));
-
+  transitioning = true;
+  const label = winnerLabel(t);
+  bigName.textContent = `${medal(rank)} المركز ${rank}`;
+  centerTeam.classList.remove("nameJump");
+  centerTeam.textContent = "";
+  await runNameShuffle(2000, label);
+  centerTeam.textContent = label;
+  centerTeam.classList.add("lockedName");
+  transitioning = false;
   revealIndex++;
 
   // زر آخر خطوة
