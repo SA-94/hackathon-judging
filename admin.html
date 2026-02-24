@@ -3,114 +3,237 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>لوحة الإدارة - الهاكاثون</title>
+  <title>الإدارة - الهاكاثون</title>
   <style>
     :root{
-      --bg:#0b1220; --panel:#0f172a; --card:#111c33; --muted:#94a3b8; --text:#e5e7eb;
-      --line:rgba(148,163,184,.18); --ok:#22c55e; --danger:#ef4444; --brand:#38bdf8;
-      --shadow:0 14px 40px rgba(0,0,0,.35); --r:18px;
+      --bg:#0b1220; --muted:#94a3b8; --text:#e5e7eb; --line:rgba(148,163,184,.18);
+      --ok:#22c55e; --danger:#ef4444; --shadow:0 16px 50px rgba(0,0,0,.35); --r:18px;
+      --brand:#38bdf8;
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)}
-    .wrap{max-width:1100px; margin:auto; padding:18px}
-    .card{background:rgba(15,23,42,.7); border:1px solid var(--line); border-radius:var(--r); padding:14px; box-shadow:var(--shadow)}
-    h1{margin:0; font-size:16px}
-    .sub{margin-top:6px; color:var(--muted); font-size:12px; line-height:1.5}
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, textarea{
-      width:100%; padding:10px 12px; border-radius:14px; border:1px solid var(--line);
-      background:rgba(17,28,51,.55); color:var(--text); outline:none; font-size:14px
-    }
-    textarea{min-height:70px; resize:vertical}
-    .row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1000px 500px at 15% 0%, rgba(56,189,248,.12), transparent 60%),var(--bg);color:var(--text)}
+    .wrap{max-width:1100px;margin:auto;padding:18px}
+    .card{background:rgba(15,23,42,.75);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);margin-top:14px}
+    h1{margin:0;font-size:16px}
+    .sub{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.5}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input{width:100%;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(17,28,51,.55);color:var(--text);outline:none;font-size:14px}
+    .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
     @media (max-width:900px){.row{grid-template-columns:1fr}}
-    .btnRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .btn{border:0; border-radius:14px; padding:11px 14px; font-weight:900; cursor:pointer}
-    .btn.primary{background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92)); color:#07121f}
-    .btn.ghost{background:rgba(17,28,51,.55); border:1px solid var(--line); color:var(--text)}
-    .btn.danger{background:rgba(239,68,68,.92); color:#190508}
-    .msg{margin-top:10px; font-size:13px; color:var(--muted)}
-    .msg.ok{color:var(--ok); font-weight:900}
-    .msg.err{color:var(--danger); font-weight:900}
-    .tableWrap{overflow:auto; border-radius:16px; border:1px solid var(--line); margin-top:12px}
-    table{width:100%; border-collapse:collapse; min-width:760px; background:rgba(17,28,51,.45)}
-    th,td{padding:10px 12px; border-bottom:1px solid var(--line); font-size:13px; text-align:right}
-    th{color:var(--muted); background:rgba(17,28,51,.65)}
-    code{background:rgba(17,28,51,.55); border:1px solid var(--line); padding:2px 6px; border-radius:10px}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{border:0;border-radius:14px;padding:10px 14px;font-weight:900;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92));color:#07121f}
+    .btn.ghost{background:rgba(17,28,51,.55);border:1px solid var(--line);color:var(--text)}
+    .msg{margin-top:10px;font-size:13px;color:var(--muted)}
+    .msg.ok{color:var(--ok);font-weight:900}
+    .msg.err{color:var(--danger);font-weight:900}
+    .teams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+    @media (max-width:980px){.teams{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.teams{grid-template-columns:1fr}}
+    .teamCard{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(17,28,51,.45)}
+    .teamTitle{font-weight:1000}
+    .teamMeta{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.5}
+    .miniBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .miniBtn{border:1px solid var(--line);background:rgba(17,28,51,.55);color:var(--text);padding:8px 10px;border-radius:12px;font-weight:900;cursor:pointer}
+    .miniBtn.danger{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.10)}
+
+    /* ===== Overlay: choose winners count ===== */
+    .overlay{
+      position:fixed; inset:0; display:none;
+      background:rgba(0,0,0,.55);
+      align-items:center; justify-content:center;
+      padding:16px;
+      z-index:50;
+    }
+    .modal{
+      width:min(520px, 100%);
+      background:rgba(15,23,42,.96);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .modal h2{margin:0;font-size:14px}
+    .modal .sub{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.6}
+
+    /* ===== Fullscreen show ===== */
+    .show{
+      position:fixed; inset:0; display:none; z-index:60;
+      background:radial-gradient(1200px 700px at 20% 10%, rgba(56,189,248,.25), transparent 55%),
+                 radial-gradient(900px 600px at 90% 30%, rgba(34,197,94,.16), transparent 55%),
+                 #070d1a;
+      color:#fff;
+    }
+    .showInner{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      padding:28px;
+      text-align:center;
+    }
+    .bigName{
+      font-size:clamp(28px, 5vw, 64px);
+      font-weight:1000;
+      letter-spacing:.2px;
+      padding:18px 22px;
+      border-radius:22px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 20px 70px rgba(0,0,0,.35);
+      min-width:min(900px, 92vw);
+    }
+    .winnersGrid{
+      width:min(900px, 92vw);
+      display:grid;
+      gap:12px;
+      margin-top:4px;
+    }
+    .winnerCard{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
+      opacity:0;
+      transform:translateY(10px);
+      transition:opacity .35s ease, transform .35s ease;
+    }
+    .winnerCard.showIt{opacity:1; transform:translateY(0)}
+    .left{
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      font-weight:1000;
+      font-size:clamp(14px, 2.2vw, 22px);
+    }
+    .medal{font-size:clamp(18px, 2.6vw, 26px)}
+    .meta{
+      color:rgba(255,255,255,.75);
+      font-size:clamp(12px, 1.7vw, 14px);
+      font-weight:700;
+      text-align:left;
+      direction:ltr;
+    }
+
+    /* Bottom control bar */
+    .controlBar{
+      width:min(900px, 92vw);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:10px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
+      margin-top:10px;
+    }
+    .controlHint{
+      color:rgba(255,255,255,.70);
+      font-size:12px;
+      user-select:none;
+    }
+    .nextBtn{
+      border:0;
+      border-radius:999px;
+      padding:10px 16px;
+      font-weight:1000;
+      cursor:pointer;
+      background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92));
+      color:#07121f;
+      min-width:130px;
+    }
+    .nextBtn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      filter:saturate(.6);
+    }
+    .ghostBtn{
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      border-radius:999px;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:900;
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
+
   <div class="card">
-    <h1>لوحة الإدارة (Admin)</h1>
-    <div class="sub">
-      تضيف الفرق وتعدلها. هذي الصفحة للإدارة فقط (كمبيوتر البروجكتر/المسؤول).<br>
-      رابط الحكّام عادة يكون: <code>/index.html</code>
-    </div>
-    <div class="row" style="margin-top:10px">
-      <div>
-        <label>PIN الإدارة</label>
-        <input id="pin" placeholder="اكتب PIN" />
-      </div>
-      <div>
-        <label>رابط الحكّام</label>
-        <input id="judgesLink" readonly />
-      </div>
-      <div>
-        <label>QR مثال لفريق</label>
-        <input id="qrExample" readonly />
-      </div>
-    </div>
+    <h1>الإدارة</h1>
+    <div class="sub">إضافة/تعديل/حذف الفرق + زر عرض النتائج للبروجكتر.</div>
     <div class="btnRow">
-      <button class="btn ghost" id="btnLoad">تحميل البيانات</button>
       <button class="btn primary" id="btnSaveAll">حفظ التغييرات</button>
-      <button class="btn danger" id="btnResetEval">تفريغ التقييمات (اختياري)</button>
+      <button class="btn ghost" id="btnShowResults">عرض النتائج</button>
     </div>
     <div class="msg" id="msg"></div>
   </div>
 
-  <div class="card" style="margin-top:14px">
-    <h1>إضافة / تعديل فريق</h1>
-    <div class="row" style="margin-top:8px">
+  <div class="card">
+    <h1 style="font-size:14px;margin:0">إضافة / تعديل فريق</h1>
+    <div class="row" style="margin-top:10px">
       <div>
         <label>Team ID</label>
         <input id="teamId" placeholder="مثال: T01 أو 1" />
       </div>
       <div>
-        <label>اسم المشروع</label>
-        <input id="project" placeholder="مثال: HealthAI" />
+        <label>اسم الفريق</label>
+        <input id="teamName" placeholder="مثال: فريق النخبة" />
       </div>
       <div>
-        <label>الجامعة/الجهة</label>
-        <input id="org" placeholder="مثال: جامعة ..." />
+        <label>اسم المشروع</label>
+        <input id="projectName" placeholder="مثال: HealthAI" />
       </div>
     </div>
-    <label>ملاحظات/وصف (اختياري)</label>
-    <textarea id="note" placeholder="اختياري"></textarea>
-
     <div class="btnRow">
       <button class="btn primary" id="btnAddOrUpdate">إضافة/تحديث</button>
-      <button class="btn ghost" id="btnClearForm">مسح الحقول</button>
+      <button class="btn ghost" id="btnClear">مسح</button>
     </div>
   </div>
 
-  <div class="card" style="margin-top:14px">
-    <h1>قائمة الفرق</h1>
-    <div class="sub">اضغط على أي صف لتعبئة النموذج وتعديله.</div>
+  <div class="card">
+    <h1 style="font-size:14px;margin:0">الفرق الحالية</h1>
+    <div id="teamsGrid" class="teams"></div>
+  </div>
 
-    <div class="tableWrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Team ID</th>
-            <th>المشروع</th>
-            <th>الجهة</th>
-            <th>ملاحظات</th>
-            <th>إجراءات</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+</div>
+
+<!-- Modal اختيار عدد الفائزين -->
+<div class="overlay" id="cfgOverlay">
+  <div class="modal">
+    <h2>عرض النتائج</h2>
+    <div class="sub">
+      اختر عدد الفائزين، واضغط تأكيد. بعد اللفلفة (4–5 ثواني) تقدر تكشف المراكز بزر "التالي".
+    </div>
+
+    <label>عدد الفائزين</label>
+    <input id="winnersCount" type="number" min="1" value="3" />
+
+    <div class="btnRow" style="margin-top:12px">
+      <button class="btn primary" id="btnCfgConfirm">تأكيد</button>
+      <button class="btn ghost" id="btnCfgCancel">إلغاء</button>
+    </div>
+
+    <div class="msg" id="cfgMsg"></div>
+  </div>
+</div>
+
+<!-- شاشة العرض الفل سكرين -->
+<div class="show" id="showScreen" aria-hidden="true">
+  <div class="showInner">
+    <div class="bigName" id="bigName">جاهز…</div>
+    <div class="winnersGrid" id="winnersGrid"></div>
+
+    <div class="controlBar">
+      <div class="controlHint">Enter/Space = التالي • Esc = خروج • R = إعادة</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button class="ghostBtn" id="btnExitShow">خروج</button>
+        <button class="nextBtn" id="btnNext" disabled>التالي</button>
+      </div>
     </div>
   </div>
 </div>
@@ -122,14 +245,22 @@
 const JSONBIN_BIN_ID  = "699c7c98d0ea881f40d25331";
 const JSONBIN_API_KEY = "$2a$10$8rkoiVkou/iglqXxQNfmduvpxAqN6XY6fILRTcIcc0Hw1MyF2g8sa";
 
-/* قفل بسيط للـ Admin */
-const ADMIN_PIN = "1234"; // غيّره
-
 /* =========================
-   JSONBin helpers
+   Helpers
    ========================= */
 const $ = (id)=>document.getElementById(id);
-function safe(x){ return String(x ?? "").trim(); }
+const safe = (x)=>String(x??"").trim();
+
+function setMsg(text, kind=""){
+  const el = $("msg");
+  el.className = "msg" + (kind ? " " + kind : "");
+  el.textContent = text;
+}
+function setCfgMsg(text, kind=""){
+  const el = $("cfgMsg");
+  el.className = "msg" + (kind ? " " + kind : "");
+  el.textContent = text;
+}
 
 async function getRecord(){
   const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
@@ -137,154 +268,356 @@ async function getRecord(){
   });
   if(!res.ok) throw new Error("Fetch failed");
   const data = await res.json();
-  return data?.record || { teams:[], evaluations:[] };
+  const r = data?.record || { teams:[], evaluations:[] };
+  r.teams = Array.isArray(r.teams) ? r.teams : [];
+  r.evaluations = Array.isArray(r.evaluations) ? r.evaluations : [];
+  return r;
 }
-
 async function putRecord(record){
   const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
     method:"PUT",
-    headers: { "Content-Type":"application/json", "X-Master-Key": JSONBIN_API_KEY },
+    headers:{ "Content-Type":"application/json", "X-Master-Key": JSONBIN_API_KEY },
     body: JSON.stringify(record)
   });
   if(!res.ok) throw new Error("Update failed");
 }
 
-function msg(text, kind=""){
-  const el = $("msg");
-  el.className = "msg" + (kind ? " " + kind : "");
-  el.textContent = text;
-}
-
+/* =========================
+   State
+   ========================= */
 let state = { teams:[], evaluations:[] };
 
-function requirePin(){
-  if(safe($("pin").value) !== ADMIN_PIN){
-    msg("PIN غير صحيح.", "err");
-    return false;
-  }
-  return true;
+/* =========================
+   Admin teams UI
+   ========================= */
+function clearForm(){
+  $("teamId").value="";
+  $("teamName").value="";
+  $("projectName").value="";
 }
 
 function render(){
-  const tbody = $("tbody");
-  tbody.innerHTML = "";
-  state.teams.sort((a,b)=> safe(a.id).localeCompare(safe(b.id), "en", {numeric:true}));
-  state.teams.forEach(t => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><b>${t.id}</b></td>
-      <td>${t.project || "—"}</td>
-      <td>${t.org || "—"}</td>
-      <td>${t.note || "—"}</td>
-      <td>
-        <button class="btn ghost" data-edit="${t.id}" style="padding:8px 10px">تعديل</button>
-        <button class="btn danger" data-del="${t.id}" style="padding:8px 10px">حذف</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
+  const grid = $("teamsGrid");
+  grid.innerHTML = "";
 
-  // روابط
-  const base = location.href.replace(/admin\.html.*/,"");
-  $("judgesLink").value = base + "index.html";
-  $("qrExample").value = base + "index.html?team=T01";
-}
+  const teams = state.teams.slice().sort((a,b)=> safe(a.id).localeCompare(safe(b.id),"en",{numeric:true}));
 
-function fillForm(team){
-  $("teamId").value = team.id || "";
-  $("project").value = team.project || "";
-  $("org").value = team.org || "";
-  $("note").value = team.note || "";
-}
-
-function upsertTeam(){
-  if(!requirePin()) return;
-  const id = safe($("teamId").value);
-  if(!id){ msg("Team ID مطلوب.", "err"); return; }
-
-  const team = {
-    id,
-    project: safe($("project").value),
-    org: safe($("org").value),
-    note: safe($("note").value),
-  };
-
-  state.teams = state.teams.filter(t => safe(t.id).toLowerCase() !== id.toLowerCase());
-  state.teams.push(team);
-  msg("تمت الإضافة/التحديث محليًا. اضغط (حفظ التغييرات) لتسجيلها.", "ok");
-  render();
-}
-
-function deleteTeam(id){
-  if(!requirePin()) return;
-  state.teams = state.teams.filter(t => safe(t.id).toLowerCase() !== safe(id).toLowerCase());
-  // (اختياري) حذف التقييمات التابعة للفريق
-  state.evaluations = state.evaluations.filter(e => safe(e.teamId).toLowerCase() !== safe(id).toLowerCase());
-  msg("تم حذف الفريق محليًا. اضغط (حفظ التغييرات) لتسجيلها.", "ok");
-  render();
-}
-
-async function load(){
-  if(!requirePin()) return;
-  msg("جاري التحميل...");
-  try{
-    state = await getRecord();
-    state.teams = Array.isArray(state.teams) ? state.teams : [];
-    state.evaluations = Array.isArray(state.evaluations) ? state.evaluations : [];
-    render();
-    msg("تم التحميل ✅", "ok");
-  }catch(e){
-    console.error(e);
-    msg("فشل التحميل. تأكد من BIN_ID و KEY.", "err");
+  if(!teams.length){
+    grid.innerHTML = `<div style="color:#94a3b8;padding:18px;border:1px dashed rgba(148,163,184,.18);border-radius:16px;background:rgba(17,28,51,.25)">لا يوجد فرق حتى الآن</div>`;
+    return;
   }
+
+  teams.forEach(t=>{
+    const card = document.createElement("div");
+    card.className = "teamCard";
+    card.innerHTML = `
+      <div class="teamTitle">${t.teamName || "—"} — <span style="color:#94a3b8;font-weight:900">${t.id}</span></div>
+      <div class="teamMeta"><b>المشروع:</b> ${t.projectName || "—"}</div>
+      <div class="miniBtns">
+        <button class="miniBtn" data-edit="${t.id}">تعديل</button>
+        <button class="miniBtn danger" data-del="${t.id}">حذف</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function upsert(){
+  const id = safe($("teamId").value);
+  const teamName = safe($("teamName").value);
+  const projectName = safe($("projectName").value);
+
+  if(!id || !teamName || !projectName){
+    setMsg("لازم Team ID + اسم الفريق + اسم المشروع.", "err");
+    return;
+  }
+
+  state.teams = state.teams.filter(t=> safe(t.id).toLowerCase() !== id.toLowerCase());
+  state.teams.push({ id, teamName, projectName });
+
+  render();
+  setMsg("تمت الإضافة/التحديث ✅ لا تنسى تضغط (حفظ التغييرات).", "ok");
+  clearForm();
+}
+
+function edit(id){
+  const t = state.teams.find(x=> safe(x.id).toLowerCase() === safe(id).toLowerCase());
+  if(!t) return;
+  $("teamId").value = t.id;
+  $("teamName").value = t.teamName;
+  $("projectName").value = t.projectName;
+}
+
+function del(id){
+  state.teams = state.teams.filter(t=> safe(t.id).toLowerCase() !== safe(id).toLowerCase());
+  // تنظيف: حذف تقييمات الفريق
+  state.evaluations = state.evaluations.filter(e=> safe(e.teamId).toLowerCase() !== safe(id).toLowerCase());
+  render();
+  setMsg("تم الحذف ✅ لا تنسى تضغط (حفظ التغييرات).", "ok");
 }
 
 async function saveAll(){
-  if(!requirePin()) return;
-  msg("جاري الحفظ...");
+  setMsg("جاري الحفظ...");
   try{
     await putRecord({ teams: state.teams, evaluations: state.evaluations });
-    msg("تم حفظ التغييرات ✅", "ok");
+    setMsg("تم حفظ التغييرات ✅", "ok");
   }catch(e){
     console.error(e);
-    msg("فشل الحفظ. تأكد من BIN_ID و KEY.", "err");
+    setMsg("فشل الحفظ. تأكد من BIN_ID و KEY.", "err");
   }
 }
 
-async function resetEvaluations(){
-  if(!requirePin()) return;
-  if(!confirm("متأكد؟ سيتم تفريغ كل التقييمات!")) return;
-  msg("جاري تفريغ التقييمات...");
+async function init(){
+  setMsg("جاري التحميل...");
   try{
-    state.evaluations = [];
-    await putRecord({ teams: state.teams, evaluations: [] });
-    msg("تم تفريغ التقييمات ✅", "ok");
+    state = await getRecord();
+    render();
+    setMsg("جاهز ✅", "ok");
   }catch(e){
     console.error(e);
-    msg("فشل العملية.", "err");
+    setMsg("فشل التحميل. تأكد من BIN_ID و KEY.", "err");
   }
 }
 
-// events
-$("btnLoad").addEventListener("click", load);
-$("btnSaveAll").addEventListener("click", saveAll);
-$("btnResetEval").addEventListener("click", resetEvaluations);
-$("btnAddOrUpdate").addEventListener("click", upsertTeam);
-$("btnClearForm").addEventListener("click", ()=>fillForm({}));
+/* =========================
+   Ranking (AVG)
+   ========================= */
+function computeRanking(){
+  const map = new Map();
+  (state.evaluations || []).forEach(e=>{
+    const teamId = safe(e.teamId);
+    if(!teamId) return;
 
-$("tbody").addEventListener("click", (e)=>{
-  const editId = e.target?.getAttribute?.("data-edit");
-  const delId  = e.target?.getAttribute?.("data-del");
-  if(editId){
-    const t = state.teams.find(x => safe(x.id).toLowerCase() === safe(editId).toLowerCase());
-    if(t) fillForm(t);
+    if(!map.has(teamId)){
+      map.set(teamId, {
+        teamId,
+        teamName: safe(e.teamName) || "",
+        projectName: safe(e.projectName) || "",
+        totals:[]
+      });
+    }
+    const g = map.get(teamId);
+    g.totals.push(Number(e.total || 0));
+    if(!g.teamName && e.teamName) g.teamName = safe(e.teamName);
+    if(!g.projectName && e.projectName) g.projectName = safe(e.projectName);
+  });
+
+  // fallback من teams
+  const teamsById = new Map((state.teams||[]).map(t=>[safe(t.id).toLowerCase(), t]));
+  for(const item of map.values()){
+    const t = teamsById.get(item.teamId.toLowerCase());
+    if(t){
+      if(!item.teamName) item.teamName = safe(t.teamName);
+      if(!item.projectName) item.projectName = safe(t.projectName);
+    }
   }
-  if(delId) deleteTeam(delId);
+
+  const arr = [...map.values()].map(x=>{
+    const n = x.totals.length || 0;
+    const sum = x.totals.reduce((a,b)=>a+b,0);
+    const avg = n ? (sum/n) : 0;
+    return { ...x, judges:n, score:avg };
+  });
+
+  arr.sort((a,b)=> b.score - a.score);
+  return arr;
+}
+
+function medal(rank){
+  if(rank===1) return "🥇";
+  if(rank===2) return "🥈";
+  if(rank===3) return "🥉";
+  return "🏅";
+}
+
+/* =========================
+   Show flow (spin then manual reveal)
+   ========================= */
+const cfgOverlay = $("cfgOverlay");
+const showScreen = $("showScreen");
+const bigName = $("bigName");
+const winnersGrid = $("winnersGrid");
+const btnNext = $("btnNext");
+
+let shuffleTimer = null;
+let running = false;
+
+// reveal state
+let revealList = []; // items in order: N..1
+let revealIndex = 0;
+let revealTotal = 0;
+
+function openCfg(){
+  setCfgMsg("");
+  cfgOverlay.style.display = "flex";
+  setTimeout(()=> $("winnersCount").focus(), 50);
+}
+function closeCfg(){ cfgOverlay.style.display = "none"; }
+
+function openShow(){
+  showScreen.style.display = "block";
+  showScreen.setAttribute("aria-hidden","false");
+  document.documentElement.requestFullscreen?.().catch(()=>{});
+}
+function closeShow(){
+  stopShuffle();
+  showScreen.style.display = "none";
+  showScreen.setAttribute("aria-hidden","true");
+  document.exitFullscreen?.().catch(()=>{});
+  running = false;
+  btnNext.disabled = true;
+}
+
+function stopShuffle(){
+  if(shuffleTimer) clearInterval(shuffleTimer);
+  shuffleTimer = null;
+}
+
+function resetRevealUI(){
+  winnersGrid.innerHTML = "";
+  revealList = [];
+  revealIndex = 0;
+  revealTotal = 0;
+  btnNext.textContent = "التالي";
+  btnNext.disabled = true;
+}
+
+async function startShowFlow(){
+  if(running) return;
+  running = true;
+  resetRevealUI();
+
+  // fetch latest
+  try{
+    state = await getRecord();
+    render();
+  }catch(e){}
+
+  const winnersCount = Math.max(1, Number($("winnersCount").value || 3));
+  const ranking = computeRanking();
+
+  if(!ranking.length){
+    setCfgMsg("لا توجد تقييمات حتى الآن. خلّ الحكّام يحفظون أولاً.", "err");
+    running = false;
+    return;
+  }
+
+  closeCfg();
+  openShow();
+
+  const winners = ranking.slice(0, winnersCount);
+  revealList = winners.slice().reverse(); // N -> 1
+  revealTotal = winnersCount;
+  revealIndex = 0;
+
+  const pool = ranking.slice(0, Math.min(12, ranking.length)).map(t=>{
+    const nm = t.teamName || `Team ${t.teamId}`;
+    return `${nm} — ${t.teamId}`;
+  });
+
+  bigName.textContent = "يتم تجهيز النتائج...";
+  btnNext.disabled = true;
+
+  // spin 4.5s
+  const spinMs = 4500;
+  shuffleTimer = setInterval(()=>{
+    bigName.textContent = pool[Math.floor(Math.random()*pool.length)];
+  }, 80);
+
+  await new Promise(r=>setTimeout(r, spinMs));
+  stopShuffle();
+
+  bigName.textContent = "جاهزين 🎉 اضغط (التالي)";
+  btnNext.disabled = false;
+}
+
+function revealNext(){
+  if(btnNext.disabled) return;
+
+  // انتهى
+  if(revealIndex >= revealList.length){
+    btnNext.textContent = "إنهاء";
+    btnNext.disabled = false;
+    // عند الضغط مرة ثانية يقفل
+    closeShow();
+    return;
+  }
+
+  const t = revealList[revealIndex];
+  const rank = revealTotal - revealIndex; // يبدأ من N إلى 1
+  const m = medal(rank);
+
+  const label = `${t.teamName || "—"} — ${t.teamId}`;
+  bigName.textContent = `${m} المركز ${rank}: ${label}`;
+
+  const card = document.createElement("div");
+  card.className = "winnerCard";
+  const score = t.score.toFixed(2);
+  card.innerHTML = `
+    <div class="left">
+      <span class="medal">${m}</span>
+      <span>المركز ${rank}</span>
+      <span>—</span>
+      <span>${label}</span>
+    </div>
+    <div class="meta">${score} / 65 • حكّام: ${t.judges}</div>
+  `;
+  winnersGrid.appendChild(card);
+  requestAnimationFrame(()=> card.classList.add("showIt"));
+
+  revealIndex++;
+
+  // زر آخر خطوة
+  if(revealIndex >= revealList.length){
+    btnNext.textContent = "إنهاء";
+  }else{
+    btnNext.textContent = "التالي";
+  }
+}
+
+/* Keyboard */
+window.addEventListener("keydown",(e)=>{
+  // داخل العرض
+  if(showScreen.style.display === "block"){
+    if(e.key === "Escape") closeShow();
+    if(e.key.toLowerCase() === "r"){
+      closeShow();
+      setTimeout(()=> startShowFlow(), 150);
+    }
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      revealNext();
+    }
+  }
+  // Enter داخل نافذة الإعدادات
+  if(cfgOverlay.style.display === "flex" && e.key === "Enter"){
+    startShowFlow();
+  }
 });
 
-// init
-render();
-msg("اكتب PIN ثم اضغط (تحميل البيانات) ✅");
+/* =========================
+   Events
+   ========================= */
+$("btnAddOrUpdate").addEventListener("click", upsert);
+$("btnClear").addEventListener("click", clearForm);
+$("btnSaveAll").addEventListener("click", saveAll);
+
+$("teamsGrid").addEventListener("click", (e)=>{
+  const editId = e.target?.getAttribute?.("data-edit");
+  const delId  = e.target?.getAttribute?.("data-del");
+  if(editId) edit(editId);
+  if(delId) del(delId);
+});
+
+$("btnShowResults").addEventListener("click", openCfg);
+$("btnCfgCancel").addEventListener("click", closeCfg);
+$("btnCfgConfirm").addEventListener("click", startShowFlow);
+
+$("btnExitShow").addEventListener("click", closeShow);
+btnNext.addEventListener("click", revealNext);
+
+/* init */
+init();
 </script>
 </body>
 </html>
