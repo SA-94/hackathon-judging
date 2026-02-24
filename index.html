@@ -3,74 +3,57 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>لوحة الحكّام - الهاكاثون</title>
+  <title>لوحة الحكّام</title>
   <style>
     :root{
       --bg:#0b1220; --panel:#0f172a; --card:#111c33; --muted:#94a3b8; --text:#e5e7eb;
-      --line:rgba(148,163,184,.18); --ok:#22c55e; --danger:#ef4444; --brand:#38bdf8; --warn:#f59e0b;
-      --shadow:0 14px 40px rgba(0,0,0,.35); --r:18px;
+      --line:rgba(148,163,184,.18); --ok:#22c55e; --danger:#ef4444; --brand:#38bdf8; --shadow:0 16px 50px rgba(0,0,0,.35);
+      --r:18px;
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text)}
-    .wrap{max-width:1150px; margin:auto; padding:18px}
-    .topbar{
-      background:rgba(15,23,42,.7); border:1px solid var(--line); border-radius:var(--r);
-      padding:14px 16px; box-shadow:var(--shadow);
-      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center
-    }
-    h1{margin:0; font-size:16px}
-    .sub{margin-top:6px; color:var(--muted); font-size:12px}
-    .tabs{display:flex; gap:10px; flex-wrap:wrap}
-    .tab{cursor:pointer; user-select:none; padding:10px 12px; border-radius:999px; font-weight:900;
-      border:1px solid var(--line); background:rgba(17,28,51,.55)}
-    .tab.active{background:rgba(56,189,248,.18); border-color:rgba(56,189,248,.4)}
-    .grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1000px 500px at 15% 0%, rgba(56,189,248,.15), transparent 60%),var(--bg);color:var(--text)}
+    .wrap{max-width:1200px;margin:auto;padding:18px}
+    .topbar{background:rgba(15,23,42,.75);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+    h1{margin:0;font-size:16px}
+    .sub{margin-top:6px;color:var(--muted);font-size:12px}
+    .btnRow{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:0;border-radius:14px;padding:10px 14px;font-weight:900;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92));color:#07121f}
+    .btn.ghost{background:rgba(17,28,51,.55);border:1px solid var(--line);color:var(--text)}
+    .card{background:rgba(15,23,42,.75);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);margin-top:14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     @media (max-width:980px){.grid{grid-template-columns:1fr}}
-    .card{background:rgba(15,23,42,.7); border:1px solid var(--line); border-radius:var(--r); padding:14px; box-shadow:var(--shadow)}
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, select, textarea{
-      width:100%; padding:10px 12px; border-radius:14px; border:1px solid var(--line);
-      background:rgba(17,28,51,.55); color:var(--text); outline:none; font-size:14px
-    }
-    textarea{min-height:78px; resize:vertical}
-    .btnRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    .btn{border:0; border-radius:14px; padding:11px 14px; font-weight:900; cursor:pointer}
-    .btn.primary{background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(34,197,94,.92)); color:#07121f}
-    .btn.ghost{background:rgba(17,28,51,.55); border:1px solid var(--line); color:var(--text)}
-    .btn.danger{background:rgba(239,68,68,.92); color:#190508}
-    .pillRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
-    .pill{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(17,28,51,.55); color:var(--muted); font-size:12px}
-    .pill b{color:var(--text)}
-    .msg{margin-top:10px; font-size:13px; color:var(--muted)}
-    .msg.ok{color:var(--ok); font-weight:900}
-    .msg.err{color:var(--danger); font-weight:900}
-    .teams{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10px}
+    .teams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
     @media (max-width:980px){.teams{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:560px){.teams{grid-template-columns:1fr}}
-    .teamCard{
-      border:1px solid var(--line); border-radius:16px; padding:12px; background:rgba(17,28,51,.45);
-      cursor:pointer;
-    }
-    .teamTop{display:flex; justify-content:space-between; gap:10px; align-items:flex-start}
-    .teamId{font-weight:1000}
-    .state{font-weight:1000; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid var(--line)}
-    .state.done{background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.35)}
-    .state.todo{background:rgba(245,158,11,.10); border-color:rgba(245,158,11,.30)}
-    .small{color:var(--muted); font-size:12px; margin-top:6px; line-height:1.5}
-    .criteriaItem{border:1px solid var(--line); background:rgba(17,28,51,.45); border-radius:16px; padding:12px; margin:10px 0}
-    .criteriaTitle{margin:0; font-size:13px; font-weight:1000; line-height:1.5}
-    .critGrid{display:grid; grid-template-columns:170px 1fr; gap:10px; margin-top:10px}
+    .teamCard{border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(17,28,51,.45);cursor:pointer;transition:transform .08s ease, opacity .2s ease}
+    .teamCard:hover{transform:translateY(-1px)}
+    .teamCard.disabled{opacity:.55; cursor:not-allowed}
+    .teamCard.disabled:hover{transform:none}
+    .teamTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .teamTitle{font-weight:1000}
+    .teamMeta{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.5}
+    .badge{font-size:12px;font-weight:1000;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+    .badge.done{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.12)}
+    .empty{color:var(--muted);text-align:center;padding:26px;border:1px dashed var(--line);border-radius:16px;background:rgba(17,28,51,.25);margin-top:10px}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input, select, textarea{width:100%;padding:10px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(17,28,51,.55);color:var(--text);outline:none;font-size:14px}
+    textarea{min-height:78px;resize:vertical}
+    .criteriaItem{border:1px solid var(--line);background:rgba(17,28,51,.45);border-radius:16px;padding:12px;margin:10px 0}
+    .critTitle{margin:0;font-size:13px;font-weight:1000;line-height:1.5}
+    .critGrid{display:grid;grid-template-columns:170px 1fr;gap:10px;margin-top:10px}
     @media (max-width:720px){.critGrid{grid-template-columns:1fr}}
-    .totalBar{display:flex; justify-content:space-between; align-items:center; gap:10px; border-radius:16px;
-      padding:12px 14px; background:rgba(56,189,248,.12); border:1px solid rgba(56,189,248,.28)}
-    .totalBar .big{font-size:16px; font-weight:1000}
-    .tableWrap{overflow:auto; border-radius:16px; border:1px solid var(--line); margin-top:12px}
-    table{width:100%; border-collapse:collapse; min-width:760px; background:rgba(17,28,51,.45)}
-    th,td{padding:10px 12px; border-bottom:1px solid var(--line); font-size:13px; text-align:right}
-    th{color:var(--muted); background:rgba(17,28,51,.65)}
-    .rank{display:inline-flex; min-width:34px; justify-content:center; padding:6px 10px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(255,255,255,.03); font-weight:1000}
+    .totalBar{display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:16px;padding:12px 14px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.28);margin-top:12px}
+    .totalBar .big{font-size:16px;font-weight:1000}
+    .msg{margin-top:10px;font-size:13px;color:var(--muted)}
+    .msg.ok{color:var(--ok);font-weight:900}
+    .msg.err{color:var(--danger);font-weight:900}
+
+    /* modal */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal{max-width:480px;width:100%;background:rgba(15,23,42,.95);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+    .modal h2{margin:0;font-size:14px}
+    .modal .sub{margin-top:8px}
   </style>
 </head>
 <body>
@@ -78,121 +61,77 @@
   <div class="topbar">
     <div>
       <h1>لوحة الحكّام</h1>
-      <div class="sub">يمسح QR → يفتح الفريق تلقائيًا → تقييم → حفظ → ✅ يظهر أمام الفريق</div>
+      <div class="sub">اكتب اسمك مرة واحدة → تظهر لك كروت الفرق → قيّم واحفظ → ✅ تظهر على الكرت</div>
     </div>
-    <div class="tabs">
-      <div class="tab" id="tabDash">الفرق</div>
-      <div class="tab" id="tabEval">التقييم</div>
-      <div class="tab" id="tabRes">النتائج</div>
+    <div class="btnRow">
+      <button class="btn ghost" id="btnRefresh">تحديث</button>
+      <button class="btn ghost" id="btnChangeName">تغيير اسم الحكم</button>
     </div>
   </div>
 
-  <!-- DASH -->
-  <section id="pageDash" style="display:none">
+  <!-- صفحة الكروت -->
+  <section id="pageCards" class="card" style="display:none">
     <div class="grid">
-      <div class="card">
-        <h1 style="font-size:14px;margin:0">بيانات الحكم</h1>
-        <div class="small">اكتب اسم/رمز الحكم (عشان ✅ تكون خاصة فيك وتمنع التكرار)</div>
-        <label>Judge ID</label>
-        <input id="judgeId" placeholder="مثال: J01 أو اسم الحكم" />
+      <div>
+        <h1 style="font-size:14px;margin:0">قائمة الفرق</h1>
+        <div class="sub">الحكم: <b id="judgeNameLabel">—</b></div>
+      </div>
+      <div>
         <label>بحث</label>
-        <input id="search" placeholder="ابحث باسم/كود الفريق أو اسم المشروع" />
-        <div class="btnRow">
-          <button class="btn primary" id="btnReload">تحديث القائمة</button>
-          <button class="btn ghost" id="btnCopyCurrentLink">نسخ رابط الفريق الحالي</button>
-        </div>
-        <div class="msg" id="dashMsg"></div>
-      </div>
-
-      <div class="card">
-        <h1 style="font-size:14px;margin:0">إحصائيات</h1>
-        <div class="pillRow">
-          <div class="pill">عدد الفرق: <b id="countTeams">0</b></div>
-          <div class="pill">تم تقييمه (منك): <b id="countDone">0</b></div>
-          <div class="pill">متبقي (لك): <b id="countTodo">0</b></div>
-        </div>
-        <div class="small" style="margin-top:10px">
-          تلميح: QR يفتح الرابط مثل <b>?team=T07</b> ويوديك مباشرة للتقييم.
-        </div>
+        <input id="search" placeholder="ابحث بـ TeamID أو اسم الفريق أو اسم المشروع" />
       </div>
     </div>
 
-    <div class="card" style="margin-top:14px">
-      <h1 style="font-size:14px;margin:0">قائمة الفرق</h1>
-      <div class="teams" id="teamsGrid"></div>
+    <div id="teamsGrid" class="teams"></div>
+    <div id="emptyState" class="empty" style="display:none">
+      لا يوجد فرق حتى الآن 👀<br><br>
+      <button class="btn primary" id="btnRefresh2">تحديث</button>
     </div>
+
+    <div class="msg" id="cardsMsg"></div>
   </section>
 
-  <!-- EVALUATE -->
-  <section id="pageEval" style="display:none">
+  <!-- صفحة التقييم -->
+  <section id="pageEval" class="card" style="display:none">
     <div class="grid">
-      <div class="card">
+      <div>
         <h1 style="font-size:14px;margin:0">التقييم</h1>
-        <div class="pillRow">
-          <div class="pill">Team ID: <b id="pillTeam">—</b></div>
-          <div class="pill">المشروع: <b id="pillProject">—</b></div>
-          <div class="pill">الجهة: <b id="pillOrg">—</b></div>
+        <div class="sub">
+          <b id="evalTeamHeader">—</b>
         </div>
-        <div id="criteriaContainer"></div>
       </div>
-
-      <div class="card">
-        <h1 style="font-size:14px;margin:0">إرسال التقييم</h1>
-        <label>Team ID</label>
-        <input id="teamId" placeholder="T07" />
-        <label>اسم المشروع</label>
-        <input id="projectTitle" placeholder="HealthAI" />
-        <label>الجهة</label>
-        <input id="org" placeholder="جامعة ..." />
-
-        <div class="totalBar" style="margin-top:12px">
-          <div>المجموع</div>
-          <div class="big"><span id="total">0</span> / 65</div>
-        </div>
-
-        <div class="btnRow">
-          <button class="btn primary" id="btnSave">حفظ</button>
-          <button class="btn ghost" id="btnNext">التالي</button>
-          <button class="btn danger" id="btnClear">مسح</button>
-        </div>
-        <div class="msg" id="evalMsg"></div>
+      <div class="btnRow" style="justify-content:flex-end">
+        <button class="btn ghost" id="btnBack">رجوع للكروت</button>
       </div>
     </div>
-  </section>
 
-  <!-- RESULTS -->
-  <section id="pageRes" style="display:none">
-    <div class="grid">
-      <div class="card">
-        <h1 style="font-size:14px;margin:0">الترتيب (حسب متوسط مجموع الحكّام)</h1>
-        <div class="btnRow">
-          <button class="btn primary" id="btnRefreshResults">تحديث النتائج</button>
-        </div>
-        <div class="tableWrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Team ID</th>
-                <th>المشروع</th>
-                <th>الجهة</th>
-                <th>عدد الحكام</th>
-                <th>متوسط</th>
-              </tr>
-            </thead>
-            <tbody id="resultsBody"></tbody>
-          </table>
-        </div>
-        <div class="msg" id="resMsg"></div>
-      </div>
+    <div id="criteriaContainer"></div>
 
-      <div class="card">
-        <h1 style="font-size:14px;margin:0">Top 3</h1>
-        <div id="top3"></div>
-        <div class="small" style="margin-top:10px">ملاحظة: النتائج هنا عامة، مو مرتبطة بحكم معيّن.</div>
-      </div>
+    <div class="totalBar">
+      <div>المجموع</div>
+      <div class="big"><span id="total">0</span> / 65</div>
     </div>
+
+    <div class="btnRow" style="margin-top:12px">
+      <button class="btn primary" id="btnSave">تأكيد / حفظ</button>
+    </div>
+
+    <div class="msg" id="evalMsg"></div>
   </section>
+</div>
+
+<!-- Modal اسم الحكم -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>أدخل اسم الحكم</h2>
+    <div class="sub">اكتب اسمك مرة واحدة فقط، عشان النظام يميّز تقييماتك ويظهر ✅ على الكروت.</div>
+    <label>اسم الحكم</label>
+    <input id="judgeNameInput" placeholder="مثال: أحمد / J01" />
+    <div class="btnRow" style="margin-top:12px">
+      <button class="btn primary" id="btnConfirmName">تأكيد</button>
+    </div>
+    <div class="msg" id="nameMsg"></div>
+  </div>
 </div>
 
 <script>
@@ -203,7 +142,7 @@ const JSONBIN_BIN_ID  = "699c7c98d0ea881f40d25331";
 const JSONBIN_API_KEY = "$2a$10$8rkoiVkou/iglqXxQNfmduvpxAqN6XY6fILRTcIcc0Hw1MyF2g8sa";
 
 /* =========================
-   Criteria
+   CRITERIA (13 بند)
    ========================= */
 const CRITERIA = [
   "وضوح الفئة المستهدفة وملاءمة الفكرة لها",
@@ -222,35 +161,15 @@ const CRITERIA = [
 ];
 
 /* =========================
-   Utils
+   Helpers
    ========================= */
 const $ = (id)=>document.getElementById(id);
 const qsa = (sel)=>[...document.querySelectorAll(sel)];
-function safe(x){ return String(x ?? "").trim(); }
+const safe = (x)=>String(x??"").trim();
+
+function show(el, on){ el.style.display = on ? "block" : "none"; }
 function msg(el, text, kind=""){ el.className="msg"+(kind?(" "+kind):""); el.textContent=text; }
 
-function setTab(name){
-  const show = (id, on)=>$(id).style.display = on ? "block" : "none";
-  show("pageDash", name==="dash");
-  show("pageEval",  name==="eval");
-  show("pageRes",   name==="res");
-  $("tabDash").classList.toggle("active", name==="dash");
-  $("tabEval").classList.toggle("active", name==="eval");
-  $("tabRes").classList.toggle("active", name==="res");
-  location.hash = "#/"+name;
-}
-
-function getParam(name){
-  const url = new URL(location.href);
-  return safe(url.searchParams.get(name));
-}
-
-/* =========================
-   JSONBin API
-   record: { teams:[], evaluations:[] }
-   evaluations item:
-   { teamId, projectTitle, org, judgeId, total, items:[...], savedAt }
-   ========================= */
 async function getRecord(){
   const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
     headers: { "X-Master-Key": JSONBIN_API_KEY }
@@ -263,7 +182,7 @@ async function getRecord(){
   return r;
 }
 async function putRecord(record){
-  const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`,{
+  const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
     method:"PUT",
     headers:{ "Content-Type":"application/json", "X-Master-Key": JSONBIN_API_KEY },
     body: JSON.stringify(record)
@@ -271,25 +190,32 @@ async function putRecord(record){
   if(!res.ok) throw new Error("Update failed");
 }
 
-/* =========================
-   State
-   ========================= */
-let state = { teams:[], evaluations:[] };
-let currentTeamId = ""; // الفريق المفتوح الآن
-
 function calcTotal(){
   const sum = qsa(".score").reduce((a,s)=>a+Number(s.value||0),0);
   $("total").textContent = sum;
   return sum;
 }
-function updatePills(){
-  $("pillTeam").textContent = safe($("teamId").value) || "—";
-  $("pillProject").textContent = safe($("projectTitle").value) || "—";
-  $("pillOrg").textContent = safe($("org").value) || "—";
+
+/* =========================
+   State
+   ========================= */
+let state = { teams:[], evaluations:[] };
+let judgeName = "";
+let currentTeam = null; // {id, teamName, projectName}
+
+function evalKey(teamId, judge){
+  return safe(teamId).toLowerCase()+"__"+safe(judge).toLowerCase();
+}
+function findEval(teamId){
+  const key = evalKey(teamId, judgeName);
+  return state.evaluations.find(e => evalKey(e.teamId, e.judgeName) === key) || null;
+}
+function isDone(teamId){
+  return !!findEval(teamId);
 }
 
 /* =========================
-   Render criteria
+   UI: render criteria
    ========================= */
 function renderCriteria(){
   const box = $("criteriaContainer");
@@ -298,7 +224,7 @@ function renderCriteria(){
     const div = document.createElement("div");
     div.className = "criteriaItem";
     div.innerHTML = `
-      <p class="criteriaTitle">${i+1}) ${text}</p>
+      <p class="critTitle">${i+1}) ${text}</p>
       <div class="critGrid">
         <div>
           <label>الدرجة</label>
@@ -316,92 +242,113 @@ function renderCriteria(){
     `;
     box.appendChild(div);
   });
-  calcTotal(); updatePills();
+  calcTotal();
 }
+
+document.addEventListener("change",(e)=>{
+  if(e.target.classList.contains("score")) calcTotal();
+});
 
 /* =========================
-   Dashboard
+   UI: render cards
    ========================= */
-function isDoneForJudge(teamId, judgeId){
-  const t = safe(teamId).toLowerCase();
-  const j = safe(judgeId).toLowerCase();
-  return state.evaluations.some(e =>
-    safe(e.teamId).toLowerCase()===t && safe(e.judgeId).toLowerCase()===j
-  );
-}
-
-function renderTeams(){
+function renderCards(){
+  $("judgeNameLabel").textContent = judgeName || "—";
   const grid = $("teamsGrid");
   grid.innerHTML = "";
 
-  const judgeId = safe($("judgeId").value);
   const query = safe($("search").value).toLowerCase();
-
   const teams = state.teams
     .slice()
     .sort((a,b)=> safe(a.id).localeCompare(safe(b.id),"en",{numeric:true}))
-    .filter(t => {
+    .filter(t=>{
       if(!query) return true;
       return safe(t.id).toLowerCase().includes(query)
-        || safe(t.project).toLowerCase().includes(query)
-        || safe(t.org).toLowerCase().includes(query);
+        || safe(t.teamName).toLowerCase().includes(query)
+        || safe(t.projectName).toLowerCase().includes(query);
     });
 
-  let done=0, todo=0;
-  teams.forEach(t=>{
-    const doneForMe = judgeId ? isDoneForJudge(t.id, judgeId) : false;
-    done += doneForMe ? 1 : 0;
-    todo += doneForMe ? 0 : 1;
+  if(!teams.length){
+    show($("emptyState"), true);
+    show(grid, false);
+    return;
+  }
 
+  show($("emptyState"), false);
+  show(grid, true);
+
+  teams.forEach(t=>{
+    const done = isDone(t.id);
     const card = document.createElement("div");
-    card.className = "teamCard";
+    card.className = "teamCard" + (done ? " disabled" : "");
     card.innerHTML = `
       <div class="teamTop">
-        <div>
-          <div class="teamId">${t.id}</div>
-          <div class="small"><b>${t.project || "—"}</b></div>
-          <div class="small">${t.org || "—"}</div>
-        </div>
-        <div class="state ${doneForMe ? "done":"todo"}">
-          ${doneForMe ? "✅ تم تقييمه" : "⏳ غير مقيّم"}
-        </div>
+        <div class="teamTitle">${t.teamName || "—"} — <span style="color:var(--muted);font-weight:900">${t.id}</span></div>
+        <div class="badge ${done ? "done":""}">${done ? "✅ تم تقييمه" : "⏳"}</div>
       </div>
+      <div class="teamMeta"><b>المشروع:</b> ${t.projectName || "—"}</div>
     `;
+
     card.addEventListener("click", ()=>{
-      openTeamForEval(t.id);
-      setTab("eval");
+      if(done){
+        msg($("cardsMsg"), "لقد تم تقييم هذا الفريق مسبقًا ✅", "ok");
+        return;
+      }
+      openEval(t.id);
     });
+
     grid.appendChild(card);
   });
-
-  $("countTeams").textContent = state.teams.length;
-  $("countDone").textContent = done;
-  $("countTodo").textContent = todo;
 }
 
-function openTeamForEval(teamId){
-  const t = state.teams.find(x => safe(x.id).toLowerCase() === safe(teamId).toLowerCase());
-  currentTeamId = t?.id || safe(teamId);
-  $("teamId").value = currentTeamId;
-  $("projectTitle").value = t?.project || "";
-  $("org").value = t?.org || "";
-  // مسح درجات قديمة
+/* =========================
+   Navigation
+   ========================= */
+function openCards(){
+  show($("pageCards"), true);
+  show($("pageEval"), false);
+  renderCards();
+}
+
+function openEval(teamId){
+  const t = state.teams.find(x=>safe(x.id).toLowerCase()===safe(teamId).toLowerCase());
+  if(!t){
+    msg($("cardsMsg"), "هذا الفريق غير موجود.", "err");
+    return;
+  }
+
+  // ✅ منع فتح فريق تم تقييمه مسبقًا حتى لو حاول من رابط
+  if(isDone(t.id)){
+    msg($("cardsMsg"), "لقد تم تقييم هذا الفريق مسبقًا ✅", "ok");
+    openCards();
+    return;
+  }
+
+  currentTeam = t;
+
+  $("evalTeamHeader").textContent = `${t.teamName} — ${t.id} | المشروع: ${t.projectName}`;
+  show($("pageCards"), false);
+  show($("pageEval"), true);
+
+  // reset
   CRITERIA.forEach((_,i)=>{
-    const s = document.querySelector(`.score[data-i="${i}"]`);
-    const n = document.querySelector(`.note[data-i="${i}"]`);
-    if(s) s.value = "0";
-    if(n) n.value = "";
+    document.querySelector(`.score[data-i="${i}"]`).value = "0";
+    document.querySelector(`.note[data-i="${i}"]`).value = "";
   });
-  calcTotal(); updatePills();
-  msg($("evalMsg"), `فتح الفريق ${currentTeamId} للتقييم.`, "");
+
+  msg($("evalMsg"), "", "");
+  calcTotal();
 }
 
+/* =========================
+   Save evaluation
+   ========================= */
 function buildPayload(){
   return {
-    teamId: safe($("teamId").value),
-    projectTitle: safe($("projectTitle").value),
-    org: safe($("org").value),
-    judgeId: safe($("judgeId").value),
+    teamId: safe(currentTeam?.id),
+    teamName: safe(currentTeam?.teamName),
+    projectName: safe(currentTeam?.projectName),
+    judgeName: safe(judgeName),
     total: calcTotal(),
     items: CRITERIA.map((c,i)=>({
       idx:i+1,
@@ -414,15 +361,14 @@ function buildPayload(){
 }
 
 function validate(payload){
-  if(!payload.judgeId) return "اكتب Judge ID أولاً (مهم للتتبع ومنع التكرار).";
-  if(!payload.teamId) return "حدد فريق (QR أو من القائمة).";
+  if(!payload.judgeName) return "اسم الحكم مطلوب.";
+  if(!payload.teamId) return "حدد فريق أولاً.";
   const missing = payload.items.find(x=>!x.score);
   if(missing) return "لازم تختار درجة لكل البنود (1–5).";
   return "";
 }
 
-/* Save with dedup per (teamId + judgeId) */
-async function saveEvaluation(){
+async function save(){
   const el = $("evalMsg");
   msg(el, "جاري الحفظ...");
 
@@ -433,198 +379,92 @@ async function saveEvaluation(){
   try{
     const rec = await getRecord();
 
-    // dedup (team + judge)
+    // (آمن) منع التكرار لنفس الحكم/الفريق
     rec.evaluations = rec.evaluations.filter(e =>
       !(safe(e.teamId).toLowerCase()===payload.teamId.toLowerCase()
-        && safe(e.judgeId).toLowerCase()===payload.judgeId.toLowerCase())
+        && safe(e.judgeName).toLowerCase()===payload.judgeName.toLowerCase())
     );
-    rec.evaluations.push(payload);
 
-    // نحافظ على teams من الادمن كما هي
-    rec.teams = rec.teams || [];
+    rec.evaluations.push(payload);
     await putRecord(rec);
 
-    // تحديث محلي وإعادة رسم
     state = rec;
     msg(el, `تم الحفظ ✅ (${payload.total}/65)`, "ok");
-    renderTeams();
+
+    // رجّع للكروت تلقائيًا
+    setTimeout(() => {
+      openCards();
+      msg($("cardsMsg"), "تم حفظ التقييم ✅", "ok");
+    }, 450);
+
   }catch(e){
     console.error(e);
     msg(el, "فشل الحفظ. تأكد من BIN_ID و KEY أو الاتصال.", "err");
   }
 }
 
-/* Next team (حسب ترتيب القائمة) */
-function nextTeam(){
-  const judgeId = safe($("judgeId").value);
-  const sorted = state.teams.slice().sort((a,b)=> safe(a.id).localeCompare(safe(b.id),"en",{numeric:true}));
-  if(!sorted.length) return;
-
-  const idx = sorted.findIndex(t => safe(t.id).toLowerCase() === safe(currentTeamId).toLowerCase());
-  // ابحث عن أول فريق غير مقيّم بعد الحالي
-  for(let k=1; k<=sorted.length; k++){
-    const t = sorted[(idx + k + sorted.length) % sorted.length];
-    if(!judgeId || !isDoneForJudge(t.id, judgeId)){
-      openTeamForEval(t.id);
-      return;
-    }
-  }
-  msg($("evalMsg"), "كل الفرق تم تقييمها من قبلك ✅", "ok");
-}
-
 /* =========================
-   Results
+   Judge name flow
    ========================= */
-function stats(arr){
-  const a = arr.map(Number).filter(n=>Number.isFinite(n));
-  const n = a.length;
-  if(!n) return {n:0, avg:0};
-  const sum = a.reduce((x,y)=>x+y,0);
-  return { n, avg: sum/n };
+function openNameModal(){
+  show($("overlay"), true);
+  $("judgeNameInput").value = judgeName || "";
+  msg($("nameMsg"), "");
+  setTimeout(()=> $("judgeNameInput").focus(), 50);
 }
-
-function renderResults(){
-  const tbody = $("resultsBody");
-  tbody.innerHTML = "";
-
-  const grouped = new Map();
-  state.evaluations.forEach(e=>{
-    const id = safe(e.teamId).toUpperCase();
-    if(!id) return;
-    if(!grouped.has(id)){
-      grouped.set(id, { teamId:id, projectTitle:safe(e.projectTitle), org:safe(e.org), totals:[] });
-    }
-    const g = grouped.get(id);
-    if(!g.projectTitle && e.projectTitle) g.projectTitle = safe(e.projectTitle);
-    if(!g.org && e.org) g.org = safe(e.org);
-    g.totals.push(Number(e.total||0));
-  });
-
-  const arr = [...grouped.values()].map(x=>{
-    const s = stats(x.totals);
-    return {...x, judges:s.n, avg:s.avg};
-  });
-
-  arr.sort((a,b)=> b.avg - a.avg);
-
-  arr.forEach((t,i)=>{
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><span class="rank">${i+1}</span></td>
-      <td><b>${t.teamId}</b></td>
-      <td>${t.projectTitle || "—"}</td>
-      <td>${t.org || "—"}</td>
-      <td>${t.judges}</td>
-      <td><b>${t.avg.toFixed(2)}</b></td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  const top = $("top3");
-  top.innerHTML = "";
-  arr.slice(0,3).forEach((t,i)=>{
-    const div = document.createElement("div");
-    div.className = "criteriaItem";
-    div.innerHTML = `
-      <div class="criteriaTitle">🏆 المركز ${i+1} — ${t.teamId} (${t.avg.toFixed(2)}/65)</div>
-      <div class="small"><b>${t.projectTitle || "—"}</b> — ${t.org || "—"} — حكّام: ${t.judges}</div>
-    `;
-    top.appendChild(div);
-  });
-
-  msg($("resMsg"), "تم تحديث النتائج ✅", "ok");
+function closeNameModal(){ show($("overlay"), false); }
+function setJudgeName(name){
+  judgeName = safe(name);
+  localStorage.setItem("judgeName", judgeName);
+  $("judgeNameLabel").textContent = judgeName;
 }
 
 /* =========================
    Load
    ========================= */
-async function loadAll(){
-  msg($("dashMsg"), "جاري التحميل...");
+async function refresh(){
+  msg($("cardsMsg"), "جاري التحميل...");
   try{
     state = await getRecord();
-    renderTeams();
-    msg($("dashMsg"), "تم التحميل ✅", "ok");
+    msg($("cardsMsg"), "تم التحديث ✅", "ok");
+    renderCards();
   }catch(e){
     console.error(e);
-    msg($("dashMsg"), "فشل التحميل. تأكد من BIN_ID و KEY.", "err");
+    msg($("cardsMsg"), "فشل التحميل. تأكد من BIN_ID و KEY.", "err");
   }
 }
 
 /* =========================
-   Events & Init
+   Init
    ========================= */
 renderCriteria();
 
-$("tabDash").addEventListener("click", ()=>setTab("dash"));
-$("tabEval").addEventListener("click", ()=>setTab("eval"));
-$("tabRes").addEventListener("click", ()=>{ setTab("res"); renderResults(); });
+$("btnBack").addEventListener("click", openCards);
+$("btnSave").addEventListener("click", save);
 
-$("btnReload").addEventListener("click", loadAll);
-$("search").addEventListener("input", renderTeams);
-$("judgeId").addEventListener("input", renderTeams);
+$("btnRefresh").addEventListener("click", refresh);
+$("btnRefresh2").addEventListener("click", refresh);
+$("search").addEventListener("input", renderCards);
 
-document.addEventListener("change", (e)=>{
-  if(e.target.classList.contains("score")) calcTotal();
-});
-document.addEventListener("input", (e)=>{
-  if(["teamId","projectTitle","org"].includes(e.target.id)) updatePills();
-});
-
-$("btnSave").addEventListener("click", saveEvaluation);
-$("btnNext").addEventListener("click", nextTeam);
-
-$("btnClear").addEventListener("click", ()=>{
-  $("teamId").value=""; $("projectTitle").value=""; $("org").value="";
-  CRITERIA.forEach((_,i)=>{
-    document.querySelector(`.score[data-i="${i}"]`).value="0";
-    document.querySelector(`.note[data-i="${i}"]`).value="";
-  });
-  calcTotal(); updatePills();
-  msg($("evalMsg"), "تم المسح ✅", "ok");
+$("btnChangeName").addEventListener("click", openNameModal);
+$("btnConfirmName").addEventListener("click", ()=>{
+  const name = safe($("judgeNameInput").value);
+  if(!name){ msg($("nameMsg"), "اكتب اسمك أولاً.", "err"); return; }
+  setJudgeName(name);
+  closeNameModal();
+  openCards();
 });
 
-$("btnCopyCurrentLink").addEventListener("click", async ()=>{
-  const tid = safe($("teamId").value || currentTeamId);
-  if(!tid){ msg($("dashMsg"), "مافي فريق محدد.", "err"); return; }
-  const base = location.href.replace(/index\.html.*/,"index.html");
-  const link = base + "?team=" + encodeURIComponent(tid) + "#/eval";
-  try{
-    await navigator.clipboard.writeText(link);
-    msg($("dashMsg"), "تم نسخ رابط الفريق ✅ (استخدمه لتوليد QR)", "ok");
-  }catch{
-    msg($("dashMsg"), "تعذر النسخ تلقائيًا. انسخ الرابط من شريط العنوان.", "err");
-  }
-});
-
-$("btnRefreshResults").addEventListener("click", async ()=>{
-  msg($("resMsg"), "جاري التحديث...");
-  try{
-    state = await getRecord();
-    renderResults();
-  }catch(e){
-    console.error(e);
-    msg($("resMsg"), "فشل التحديث.", "err");
-  }
-});
-
-// Routing + QR
-function route(){
-  const h = (location.hash || "#/dash").toLowerCase();
-  if(h.includes("eval")) setTab("eval");
-  else if(h.includes("res")) setTab("res");
-  else setTab("dash");
-}
-window.addEventListener("hashchange", route);
-
-// Load + open QR team if provided
 (async ()=>{
-  route();
-  await loadAll();
+  judgeName = safe(localStorage.getItem("judgeName"));
+  await refresh();
 
-  const teamFromQR = getParam("team");
-  if(teamFromQR){
-    openTeamForEval(teamFromQR);
-    setTab("eval");
+  if(!judgeName){
+    openNameModal();
+    show($("pageCards"), false);
+  }else{
+    show($("pageCards"), true);
+    openCards();
   }
 })();
 </script>
